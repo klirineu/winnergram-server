@@ -1,12 +1,12 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _cors = require('cors'); var _cors2 = _interopRequireDefault(_cors);
-var _directservice = require('../../services/Social/direct.service');
+import e from "cors";
+import { DirectService } from "../../services/Social/direct.service";
 
 class DirectController {
-    static __initStatic() {this.getDirectRoom = async (req, res) => {
+    static getDirectRoom = async (req, res) => {
         const { roomid } = req.params;
 
         try {
-            const Direct = await _directservice.DirectService.getDirectRoom({
+            const Direct = await DirectService.getDirectRoom({
                 roomid: roomid,
             });
 
@@ -21,11 +21,11 @@ class DirectController {
                 .status(500)
                 .json({ error: "true", message: "Internal Server Error" });
         }
-    }}
+    };
 
-    static __initStatic2() {this.getActiveRooms = async (req, res) => {
+    static getActiveRooms = async (req, res) => {
         try {
-            const ActiveDirects = await _directservice.DirectService.getActiveDirect({
+            const ActiveDirects = await DirectService.getActiveDirect({
                 userid: req.user,
             });
 
@@ -40,7 +40,7 @@ class DirectController {
                 .status(500)
                 .json({ error: "true", message: "Internal Server Error" });
         }
-    }}
-} DirectController.__initStatic(); DirectController.__initStatic2();
+    };
+}
 
-exports.DirectController = DirectController;
+export { DirectController };

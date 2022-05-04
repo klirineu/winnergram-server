@@ -1,2 +1,2 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _createNamedExportFrom(obj, localName, importedName) { Object.defineProperty(exports, localName, {enumerable: true, get: () => obj[importedName]}); }var _PushNotification = require('./PushNotification'); _createNamedExportFrom(_PushNotification, 'PushNotification', 'default');
-var _RegistrationMail = require('./RegistrationMail'); _createNamedExportFrom(_RegistrationMail, 'RegistrationMail', 'default');
+export { default as PushNotification } from "./PushNotification";
+export { default as RegistrationMail } from "./RegistrationMail";

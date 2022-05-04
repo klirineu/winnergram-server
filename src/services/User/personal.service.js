@@ -1,10 +1,10 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _httperrors = require('http-errors'); var _httperrors2 = _interopRequireDefault(_httperrors);
-var _dbSync = require('../../configs/dbSync');
+import createError from "http-errors";
+import { dbSync } from "../../configs/dbSync";
 
 class PersonalService {
     static async createPersonal(data) {
         const { fname, lname, age, avatar, userid } = data;
-        let Personal = await _dbSync.dbSync.accounts.update({
+        let Personal = await dbSync.accounts.update({
             where: {
                 id: userid,
             },
@@ -33,4 +33,4 @@ class PersonalService {
     }
 }
 
-exports.PersonalService = PersonalService;
+export { PersonalService };

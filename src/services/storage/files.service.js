@@ -1,10 +1,10 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _dbSync = require('../../configs/dbSync');
-var _httperrors = require('http-errors'); var _httperrors2 = _interopRequireDefault(_httperrors);
-var _readStreammodule = require('../../modules/readStream.module');
+import { dbSync } from "../../configs/dbSync";
+import createError from "http-errors";
+import { getFileStream } from "../../modules/readStream.module";
 
 class FileService {
     static async getAvatar(username) {
-        const avatarKey = await _dbSync.dbSync.accounts.findFirst({
+        const avatarKey = await dbSync.accounts.findFirst({
             where: {
                 OR: [{ username: username }, { id: username }],
             },
@@ -17,14 +17,14 @@ class FileService {
             },
         });
         if (!avatarKey)
-            throw _httperrors2.default.NotFound("Avatar for this user has not exist.");
-        const retriveImage = _readStreammodule.getFileStream.call(void 0, 
+            throw createError.NotFound("Avatar for this user has not exist.");
+        const retriveImage = getFileStream(
             "avatars",
             avatarKey.Personal[0].avatar
         );
 
         retriveImage.on("error", (e) => {
-            throw _httperrors2.default.InternalServerError(
+            throw createError.InternalServerError(
                 "It looks like there was an error displaying the user image."
             );
         });
@@ -33,15 +33,15 @@ class FileService {
     }
 
     static async getPostImage(postid) {
-        const imageKey = await _dbSync.dbSync.posts.findUnique({
+        const imageKey = await dbSync.posts.findUnique({
             where: {
                 id: postid,
             },
         });
-        if (!imageKey) throw _httperrors2.default.NotFound("Post not exist.");
+        if (!imageKey) throw createError.NotFound("Post not exist.");
         if (imageKey.isImage === false)
-            throw _httperrors2.default.NotFound("Image for this post has not exist.");
-        const retriveImage = _readStreammodule.getFileStream.call(void 0, "posts/images", imageKey.file);
+            throw createError.NotFound("Image for this post has not exist.");
+        const retriveImage = getFileStream("posts/images", imageKey.file);
 
         retriveImage.on("error", (e) => {
             if (e.code === "TimeoutError")
@@ -53,15 +53,15 @@ class FileService {
     }
 
     static async getPostVideo(postid) {
-        const videoKey = await _dbSync.dbSync.posts.findUnique({
+        const videoKey = await dbSync.posts.findUnique({
             where: {
                 id: postid,
             },
         });
-        if (!videoKey) throw _httperrors2.default.NotFound("Post not exist.");
+        if (!videoKey) throw createError.NotFound("Post not exist.");
         if (videoKey.isVideo === false)
-            throw _httperrors2.default.NotFound("Video for this post has not exist.");
-        const retriveVideo = _readStreammodule.getFileStream.call(void 0, "posts/videos", videoKey.file);
+            throw createError.NotFound("Video for this post has not exist.");
+        const retriveVideo = getFileStream("posts/videos", videoKey.file);
 
         retriveVideo.on("error", (e) => {
             if (e.code === "TimeoutError")
@@ -73,4 +73,4 @@ class FileService {
     }
 }
 
-exports.FileService = FileService;
+export { FileService };

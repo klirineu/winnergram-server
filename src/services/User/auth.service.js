@@ -1,27 +1,27 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _dbSync = require('../../configs/dbSync');
-var _jwtmodule = require('../../modules/jwt.module'); var _jwtmodule2 = _interopRequireDefault(_jwtmodule);
-var _bcrypt = require('bcrypt'); var _bcrypt2 = _interopRequireDefault(_bcrypt);
-var _httperrors = require('http-errors'); var _httperrors2 = _interopRequireDefault(_httperrors);
-var _formulateTextmodule = require('../../modules/formulateText.module');
-var _bull = require('../../lib/bull'); var _bull2 = _interopRequireDefault(_bull);
-var _stringrandom = require('string-random'); var _stringrandom2 = _interopRequireDefault(_stringrandom);
+import { dbSync } from "../../configs/dbSync";
+import jwt from "../../modules/jwt.module";
+import bcrypt from "bcrypt";
+import createError from "http-errors";
+import { lowerAndSpaces } from "../../modules/formulateText.module";
+import Bull from "../../lib/bull";
+import stringGenerator from "string-random";
 
 class AuthService {
     static async createUser(data) {
         const { username, email, pushToken, pass } = data;
 
-        const User = await _dbSync.dbSync.accounts.create({
+        const User = await dbSync.accounts.create({
             data: {
-                username: _formulateTextmodule.lowerAndSpaces.call(void 0, username),
+                username: lowerAndSpaces(username),
                 email: email,
-                secretToken: _stringrandom2.default.call(void 0, 340),
+                secretToken: stringGenerator(340),
                 pushToken: pushToken,
-                password: _bcrypt2.default.hashSync(pass, 8),
+                password: bcrypt.hashSync(pass, 8),
             },
         });
 
         User.password = undefined;
-        User.token = await _jwtmodule2.default.sign(User);
+        User.token = await jwt.sign(User);
 
         // await Bull.add({
         //     id: User.id,
@@ -35,7 +35,7 @@ class AuthService {
 
     static async loginUser(data) {
         const { email, pass } = data;
-        const User = await _dbSync.dbSync.accounts.findFirst({
+        const User = await dbSync.accounts.findFirst({
             where: {
                 OR: [
                     {
@@ -48,56 +48,56 @@ class AuthService {
             },
         });
 
-        if (!User) throw _httperrors2.default.NotFound("This user is not registered.");
-        const testPass = _bcrypt2.default.compareSync(pass, User.password);
+        if (!User) throw createError.NotFound("This user is not registered.");
+        const testPass = bcrypt.compareSync(pass, User.password);
 
         if (!testPass)
-            throw _httperrors2.default.Unauthorized("Invalid email or password.");
+            throw createError.Unauthorized("Invalid email or password.");
 
         User.password = undefined;
-        const token = await _jwtmodule2.default.sign(User);
+        const token = await jwt.sign(User);
 
         return { ...User, token };
     }
 
     static async authWithGoogle(data) {
         const { username, email, pass } = data;
-        const checkAccount = await _dbSync.dbSync.accounts.findUnique({
+        const checkAccount = await dbSync.accounts.findUnique({
             where: {
                 email: email,
             },
         });
 
         if (!checkAccount) {
-            const Auth = await _dbSync.dbSync.accounts.create({
+            const Auth = await dbSync.accounts.create({
                 data: {
                     email: email,
                     username: username,
                     verified: true,
                     accountType: "GOOGLE",
-                    secretToken: _stringrandom2.default.call(void 0, 340),
-                    password: _bcrypt2.default.hashSync(pass, 8),
+                    secretToken: stringGenerator(340),
+                    password: bcrypt.hashSync(pass, 8),
                 },
             });
 
             Auth.password = undefined;
-            Auth.token = await _jwtmodule2.default.sign(Auth);
+            Auth.token = await jwt.sign(Auth);
 
             return Auth;
         } else {
-            const Auth = await _dbSync.dbSync.accounts.findUnique({
+            const Auth = await dbSync.accounts.findUnique({
                 where: {
                     email: email,
                 },
             });
 
-            const testPass = _bcrypt2.default.compareSync(pass, Auth.password);
+            const testPass = bcrypt.compareSync(pass, Auth.password);
 
             if (!testPass)
-                throw _httperrors2.default.Unauthorized("Invalid email or password.");
+                throw createError.Unauthorized("Invalid email or password.");
 
             Auth.password = undefined;
-            const token = await _jwtmodule2.default.sign(Auth);
+            const token = await jwt.sign(Auth);
 
             return { ...Auth, token };
         }
@@ -106,19 +106,19 @@ class AuthService {
     static async RegistrationMail(data) {
         const { secretToken, id } = data;
 
-        const User = await _dbSync.dbSync.accounts.findUnique({
+        const User = await dbSync.accounts.findUnique({
             where: {
                 id: id,
             },
         });
 
-        if (!User) throw _httperrors2.default[404]("This user is not registered.");
+        if (!User) throw createError[404]("This user is not registered.");
         if (User.secretToken !== secretToken)
-            throw _httperrors2.default[400](`This token is invalid for the user`);
+            throw createError[400](`This token is invalid for the user`);
         if (User.verified === true)
-            throw _httperrors2.default[409](`This user is already verified.`);
+            throw createError[409](`This user is already verified.`);
 
-        const verifyUpdate = await _dbSync.dbSync.accounts.update({
+        const verifyUpdate = await dbSync.accounts.update({
             where: {
                 id: id,
             },
@@ -136,16 +136,16 @@ class AuthService {
     static async resendRegistrationEmail(data) {
         const { id } = data;
 
-        const User = await _dbSync.dbSync.accounts.findUnique({
+        const User = await dbSync.accounts.findUnique({
             where: {
                 id: id,
             },
         });
-        if (!User) throw _httperrors2.default[404]("This user is not registered.");
+        if (!User) throw createError[404]("This user is not registered.");
         if (User.verified === true)
-            throw _httperrors2.default[409](`This user is already verified.`);
+            throw createError[409](`This user is already verified.`);
 
-        await _bull2.default.add({
+        await Bull.add({
             id: User.id,
             uniquehash: User.secretToken,
             name: User.username,
@@ -159,4 +159,4 @@ class AuthService {
     }
 }
 
-exports.AuthService = AuthService;
+export { AuthService };
