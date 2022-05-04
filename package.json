@@ -6,7 +6,7 @@
   "scripts": {
     "build": "sucrase ./src -d ./dist --transforms imports",
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
+    "start": "nodemon src/server.js",
     "wg_websocket": "nodemon ./src/websocket.js",
     "wg_bull": "nodemon src/bull.js",
     "wg_httpserver": "nodemon src/server.js"
@@ -43,6 +43,7 @@
     "multer-s3": "^2.10.0",
     "multer-s3-sharp-resizer": "^1.0.2",
     "nodemailer": "^6.7.2",
+    "nodemon": "^2.0.16",
     "socket.io": "^4.4.1",
     "string-random": "^0.1.3"
   }
