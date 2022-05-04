@@ -1,16 +1,16 @@
-import { dbSync } from "../../configs/dbSync";
-import  { stringToBoolean } from "../../modules/formulateText.module";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});var _dbSync = require('../../configs/dbSync');
+var _formulateTextmodule = require('../../modules/formulateText.module');
 class PostService {
     static async newPost (data) {
         const { author, content, file, hashtags, isImage, isVideo } = data;
-        const newPost = await dbSync.posts.create({
+        const newPost = await _dbSync.dbSync.posts.create({
             data: {
                 author: author,
                 content: content,
                 file: file,
                 hashtags: hashtags,
-                isImage: stringToBoolean(isImage),
-                isVideo: stringToBoolean(isVideo),
+                isImage: _formulateTextmodule.stringToBoolean.call(void 0, isImage),
+                isVideo: _formulateTextmodule.stringToBoolean.call(void 0, isVideo),
             }
         });
 
@@ -19,7 +19,7 @@ class PostService {
     }
 
     static async getSinglePost(postid) {
-        const Post = await dbSync.posts.findUnique({
+        const Post = await _dbSync.dbSync.posts.findUnique({
             where: {
                 id: postid
             },
@@ -90,4 +90,4 @@ class PostService {
     }
 }
 
-export { PostService };
+exports.PostService = PostService;

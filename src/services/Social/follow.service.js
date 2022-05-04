@@ -1,19 +1,19 @@
-import { dbSync } from "../../configs/dbSync";
-import createError from "http-errors";
-import stringGenerator from "string-random";
-import { DataService } from "../User/user.service";
-import bull from "../../lib/bull";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _dbSync = require('../../configs/dbSync');
+var _httperrors = require('http-errors'); var _httperrors2 = _interopRequireDefault(_httperrors);
+var _stringrandom = require('string-random'); var _stringrandom2 = _interopRequireDefault(_stringrandom);
+var _userservice = require('../User/user.service');
+var _bull = require('../../lib/bull'); var _bull2 = _interopRequireDefault(_bull);
 
 class FollowService {
     static async Follow(userid, authorid) {
-        const getRoomID = await dbSync.follows.findMany();
+        const getRoomID = await _dbSync.dbSync.follows.findMany();
         const isRoomAleardyExist = getRoomID.filter(
             (room) => room.author === userid && room.member === authorid
         );
 
         if (!isRoomAleardyExist.length) {
-            const generated = stringGenerator(50);
-            const UserFollow = await dbSync.accounts.findUnique({
+            const generated = _stringrandom2.default.call(void 0, 50);
+            const UserFollow = await _dbSync.dbSync.accounts.findUnique({
                 where: {
                     id: userid,
                 },
@@ -22,7 +22,7 @@ class FollowService {
                     Settings: true,
                 },
             });
-            let FollowUser = await dbSync.accounts.update({
+            let FollowUser = await _dbSync.dbSync.accounts.update({
                 where: {
                     id: authorid,
                 },
@@ -38,7 +38,7 @@ class FollowService {
 
             if (UserFollow.Settings[0].follows === true) {
                 if (UserFollow.pushToken !== "nothing") {
-                    await bull.add("PushNotificationsJob", {
+                    await _bull2.default.add("PushNotificationsJob", {
                         title: "Novo Seguidor",
                         to: UserFollow.pushToken,
                         sound: "default",
@@ -48,7 +48,7 @@ class FollowService {
                 }
             }
 
-            await dbSync.direct.create({
+            await _dbSync.dbSync.direct.create({
                 data: {
                     author: authorid,
                     member: userid,
@@ -58,7 +58,7 @@ class FollowService {
 
             return FollowUser;
         } else {
-            const UserFollow = await dbSync.accounts.findUnique({
+            const UserFollow = await _dbSync.dbSync.accounts.findUnique({
                 where: {
                     id: userid,
                 },
@@ -68,7 +68,7 @@ class FollowService {
                 },
             });
 
-            let FollowUser = await dbSync.accounts.update({
+            let FollowUser = await _dbSync.dbSync.accounts.update({
                 where: {
                     id: authorid,
                 },
@@ -84,7 +84,7 @@ class FollowService {
 
             if (UserFollow.Settings[0].follows === true) {
                 if (UserFollow.pushToken !== "nothing") {
-                    await bull.add("PushNotificationsJob", {
+                    await _bull2.default.add("PushNotificationsJob", {
                         title: "Novo Seguidor",
                         to: UserFollow.pushToken,
                         sound: "default",
@@ -99,7 +99,7 @@ class FollowService {
     }
 
     static async unFollow(userid, authorid) {
-        let getFollowUser = await dbSync.follows.findFirst({
+        let getFollowUser = await _dbSync.dbSync.follows.findFirst({
             where: {
                 member: userid,
                 author: authorid,
@@ -110,7 +110,7 @@ class FollowService {
                 member: false,
             },
         });
-        const unFollowUser = await dbSync.follows.delete({
+        const unFollowUser = await _dbSync.dbSync.follows.delete({
             where: { id: getFollowUser.id },
         });
 
@@ -118,7 +118,7 @@ class FollowService {
     }
 
     static async checkFollow(userid, authorid) {
-        let isCheck = await dbSync.follows.findFirst({
+        let isCheck = await _dbSync.dbSync.follows.findFirst({
             where: {
                 author: authorid,
                 member: userid,
@@ -130,7 +130,7 @@ class FollowService {
 
     static async getFollowingUsersData(data) {
         const { username } = data;
-        const Users = await dbSync.accounts.findUnique({
+        const Users = await _dbSync.dbSync.accounts.findUnique({
             where: {
                 username: username,
             },
@@ -139,7 +139,7 @@ class FollowService {
             },
         });
         if (!Users)
-            throw createError.NotFound(
+            throw _httperrors2.default.NotFound(
                 "Looks like this user dont follow anyone"
             );
 
@@ -147,4 +147,4 @@ class FollowService {
     }
 }
 
-export { FollowService };
+exports.FollowService = FollowService;

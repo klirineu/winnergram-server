@@ -1,11 +1,11 @@
-import { DataService } from "../../services/User/user.service";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});var _userservice = require('../../services/User/user.service');
 
 class DataController {
-    static getUser = async (req, res) => {
+    static __initStatic() {this.getUser = async (req, res) => {
         const { username } = req.params;
 
         try {
-            const User = await DataService.getUser({ username });
+            const User = await _userservice.DataService.getUser({ username });
 
             res.status(200).json(User);
         } catch (e) {
@@ -19,11 +19,11 @@ class DataController {
                 msg: "Internal Server Error.",
             });
         }
-    };
+    }}
 
-    static getUsers = async (req, res) => {
+    static __initStatic2() {this.getUsers = async (req, res) => {
         try {
-            const Users = await DataService.getUsers();
+            const Users = await _userservice.DataService.getUsers();
 
             res.status(200).json(Users);
         } catch (e) {
@@ -37,13 +37,13 @@ class DataController {
                 msg: "Internal Server Error.",
             });
         }
-    };
+    }}
 
-    static getUserFeed = async (req, res) => {
+    static __initStatic3() {this.getUserFeed = async (req, res) => {
         const { username } = req.params;
 
         try {
-            const Feed = await DataService.getUserFeed({ username });
+            const Feed = await _userservice.DataService.getUserFeed({ username });
 
             return res.status(200).json(Feed);
         } catch (e) {
@@ -65,12 +65,12 @@ class DataController {
                 msg: "Internal Server Error",
             });
         }
-    };
+    }}
 
-    static getUserPosts = async (req, res) => {
+    static __initStatic4() {this.getUserPosts = async (req, res) => {
         const { username } = req.params;
         try {
-            const Posts = await DataService.getUserPosts({ username });
+            const Posts = await _userservice.DataService.getUserPosts({ username });
 
             return res.status(200).json(Posts);
         } catch (e) {
@@ -88,7 +88,7 @@ class DataController {
                 .status(500)
                 .json({ status: "error", msg: "Internal Server Error" });
         }
-    };
-}
+    }}
+} DataController.__initStatic(); DataController.__initStatic2(); DataController.__initStatic3(); DataController.__initStatic4();
 
-export { DataController };
+exports.DataController = DataController;

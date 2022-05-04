@@ -1,4 +1,4 @@
-import { Expo } from "expo-server-sdk";
-let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});var _exposerversdk = require('expo-server-sdk');
+let expo = new (0, _exposerversdk.Expo)({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
-export default expo;
+exports. default = expo;
