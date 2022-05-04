@@ -1,8 +1,8 @@
-export const lowerAndSpaces = (string) => {
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); const lowerAndSpaces = (string) => {
     return string.toLowerCase().replace(/\s/g, '')
-}
+}; exports.lowerAndSpaces = lowerAndSpaces
 
-export const stringToBoolean = (string) => {
+ const stringToBoolean = (string) => {
     switch(string.toLowerCase().trim()){
         case "true": 
         case "yes": 
@@ -18,4 +18,4 @@ export const stringToBoolean = (string) => {
         default: 
           return Boolean(string);
     }
-}
+}; exports.stringToBoolean = stringToBoolean

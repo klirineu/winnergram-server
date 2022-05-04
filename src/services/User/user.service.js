@@ -1,10 +1,10 @@
-import createError from "http-errors";
-import { dbSync } from "../../configs/dbSync";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _httperrors = require('http-errors'); var _httperrors2 = _interopRequireDefault(_httperrors);
+var _dbSync = require('../../configs/dbSync');
 
 class DataService {
     static async getUser(data) {
         const { username } = data;
-        let User = await dbSync.accounts.findFirst({
+        let User = await _dbSync.dbSync.accounts.findFirst({
             where: {
                 OR: [{ id: username }, { username: username }],
             },
@@ -21,10 +21,10 @@ class DataService {
         });
 
         if (!User)
-            throw createError.NotFound(
+            throw _httperrors2.default.NotFound(
                 "This user does not exist in our database."
             );
-        const Followers = await dbSync.follows.findMany({
+        const Followers = await _dbSync.dbSync.follows.findMany({
             where: { member: User.id },
         });
 
@@ -36,7 +36,7 @@ class DataService {
     }
 
     static async getUsers() {
-        let Users = await dbSync.accounts.findMany({
+        let Users = await _dbSync.dbSync.accounts.findMany({
             select: {
                 id: true,
                 username: true,
@@ -48,7 +48,7 @@ class DataService {
                 _count: true,
             },
         });
-        if (!Users) throw createError.NotFound("Unable to receive users.");
+        if (!Users) throw _httperrors2.default.NotFound("Unable to receive users.");
 
         for (let User of Users) {
             User.password = undefined;
@@ -61,7 +61,7 @@ class DataService {
     // Social
     static async getUserFeed(data) {
         const { username, user } = data;
-        const User = await dbSync.accounts.findFirst({
+        const User = await _dbSync.dbSync.accounts.findFirst({
             where: {
                 username: username,
             },
@@ -71,17 +71,17 @@ class DataService {
             },
         });
         if (!User)
-            throw createError[400]("This user does not exist in our database.");
+            throw _httperrors2.default[400]("This user does not exist in our database.");
 
         const FollowingMembers = User.Follows.map((follow) => {
             return follow.member;
         });
         if (!FollowingMembers.length)
-            throw createError.NotFound(
+            throw _httperrors2.default.NotFound(
                 "It looks like this user is not following anyone."
             );
 
-        const Posts = await dbSync.posts.findMany({
+        const Posts = await _dbSync.dbSync.posts.findMany({
             orderBy: {
                 posted_at: "desc",
             },
@@ -118,7 +118,7 @@ class DataService {
             },
         });
         if (!Posts.length)
-            throw createError.NotFound("User with no posts in feed.");
+            throw _httperrors2.default.NotFound("User with no posts in feed.");
 
         return Posts.map((post) => ({
             id: post.id,
@@ -143,7 +143,7 @@ class DataService {
 
     static async getUserPosts(data) {
         const { username } = data;
-        const User = await dbSync.accounts.findFirst({
+        const User = await _dbSync.dbSync.accounts.findFirst({
             where: {
                 username: username,
             },
@@ -153,11 +153,11 @@ class DataService {
             },
         });
         if (!User)
-            throw createError.NotFound(
+            throw _httperrors2.default.NotFound(
                 "This user does not exist in our database."
             );
 
-        const Posts = await dbSync.posts.findMany({
+        const Posts = await _dbSync.dbSync.posts.findMany({
             orderBy: {
                 posted_at: "desc",
             },
@@ -191,7 +191,7 @@ class DataService {
                 _count: true,
             },
         });
-        if (!Posts.length) throw createError.NotFound("User with no posts.");
+        if (!Posts.length) throw _httperrors2.default.NotFound("User with no posts.");
 
         return Posts.map((post) => ({
             id: post.id,
@@ -215,4 +215,4 @@ class DataService {
     }
 }
 
-export { DataService };
+exports.DataService = DataService;

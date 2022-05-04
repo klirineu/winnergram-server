@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});var _client = require('@prisma/client');
 
-const dbSync = new PrismaClient();
+const dbSync = new (0, _client.PrismaClient)();
 
-export { dbSync, Prisma };
+exports.dbSync = dbSync; exports.Prisma = _client.Prisma;

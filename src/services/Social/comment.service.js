@@ -1,10 +1,10 @@
-import { dbSync } from "../../configs/dbSync";
-import bull from "../../lib/bull";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _dbSync = require('../../configs/dbSync');
+var _bull = require('../../lib/bull'); var _bull2 = _interopRequireDefault(_bull);
 
 class CommentService {
     static async Comment(data) {
         const { postid, content, author } = data;
-        const Comment = await dbSync.comments.create({
+        const Comment = await _dbSync.dbSync.comments.create({
             data: {
                 content: content,
                 post: postid,
@@ -12,7 +12,7 @@ class CommentService {
             },
         });
 
-        const getUser = await dbSync.accounts.findUnique({
+        const getUser = await _dbSync.dbSync.accounts.findUnique({
             where: {
                 id: author,
             },
@@ -21,7 +21,7 @@ class CommentService {
             },
         });
 
-        const findPost = await dbSync.posts.findUnique({
+        const findPost = await _dbSync.dbSync.posts.findUnique({
             where: {
                 id: postid,
             },
@@ -30,7 +30,7 @@ class CommentService {
             },
         });
 
-        const findAuthor = await dbSync.accounts.findUnique({
+        const findAuthor = await _dbSync.dbSync.accounts.findUnique({
             where: {
                 id: findPost.author,
             },
@@ -44,7 +44,7 @@ class CommentService {
         if (author !== findPost.author) {
             if (findAuthor.Settings[0].comments === true) {
                 if (findAuthor.pushToken !== "nothing") {
-                    await bull.add("PushNotificationsJob", {
+                    await _bull2.default.add("PushNotificationsJob", {
                         title: "Novo comentario!",
                         to: findAuthor.pushToken,
                         sound: "default",
@@ -58,4 +58,4 @@ class CommentService {
     }
 }
 
-export { CommentService };
+exports.CommentService = CommentService;

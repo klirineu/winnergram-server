@@ -1,11 +1,11 @@
-import createError from "http-errors";
-import { dbSync } from "../../configs/dbSync";
-import { DataService } from "../User/user.service";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _httperrors = require('http-errors'); var _httperrors2 = _interopRequireDefault(_httperrors);
+var _dbSync = require('../../configs/dbSync');
+var _userservice = require('../User/user.service');
 
 class DirectService {
     static async getDirectRoom(data) {
         const { roomid } = data;
-        const getDirectRoom = await dbSync.direct.findUnique({
+        const getDirectRoom = await _dbSync.dbSync.direct.findUnique({
             where: {
                 room: roomid,
             },
@@ -30,12 +30,12 @@ class DirectService {
             },
         });
 
-        if (!getDirectRoom) throw createError.NotFound("No direct room found");
+        if (!getDirectRoom) throw _httperrors2.default.NotFound("No direct room found");
 
-        const author = await DataService.getUser({
+        const author = await _userservice.DataService.getUser({
             username: getDirectRoom.author,
         });
-        const member = await DataService.getUser({
+        const member = await _userservice.DataService.getUser({
             username: getDirectRoom.member,
         });
 
@@ -53,7 +53,7 @@ class DirectService {
 
     static async getActiveDirect(data) {
         const { userid } = data;
-        const getActiveDirects = await dbSync.direct.findMany({
+        const getActiveDirects = await _dbSync.dbSync.direct.findMany({
             orderBy: {
                 created_at: "desc",
             },
@@ -75,7 +75,7 @@ class DirectService {
             },
         });
         if (!getActiveDirects)
-            throw createError.notFound("No active direct rooms");
+            throw _httperrors2.default.notFound("No active direct rooms");
 
         return getActiveDirects
             .filter((direct) => direct._count.Messages > 0)
@@ -91,7 +91,7 @@ class DirectService {
 
     static async createNewmessage(data) {
         const { id, author, message, room } = data;
-        const newMessage = await dbSync.messages.create({
+        const newMessage = await _dbSync.dbSync.messages.create({
             data: {
                 id: id,
                 author: author,
@@ -104,4 +104,4 @@ class DirectService {
     }
 }
 
-export { DirectService };
+exports.DirectService = DirectService;

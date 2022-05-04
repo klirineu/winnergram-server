@@ -1,10 +1,10 @@
-import Mailer from '../lib/mailer';
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _mailer = require('../lib/mailer'); var _mailer2 = _interopRequireDefault(_mailer);
 
-export default {
+exports. default = {
 	key: 'RegistrationMailJob',
 	async handle(data) {
 		const { id, uniquehash, name, email } = data.data;
-		Mailer.sendMail({
+		_mailer2.default.sendMail({
 			to: `${name} < ${email} >`,
 			from: 'Winnegram <noreply@winnegram.com.br>',
 			subject: 'Confirme a sua conta Winnegram',

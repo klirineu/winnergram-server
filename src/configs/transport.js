@@ -1,6 +1,6 @@
-require("dotenv").config();
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});require("dotenv").config();
 
-export default {
+exports. default = {
     host: process.env.MAILER_HOST,
     port: process.env.MAILER_PORT,
     secure: false,
