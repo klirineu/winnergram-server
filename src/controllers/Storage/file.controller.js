@@ -1,4 +1,4 @@
-import { FileService } from "../../services/Storage/files.service";
+import { FileService } from "../../services/storage/files.service";
 
 
 class FileController {
