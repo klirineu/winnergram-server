@@ -1,10 +1,10 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _push = require('../lib/push'); var _push2 = _interopRequireDefault(_push);
+import push from "../lib/push";
 
-exports. default = {
+export default {
     key: "PushNotificationsJob",
     async handle(data) {
         const { to, sound, body, priority, title } = data.data;
-        _push2.default.sendPushNotificationsAsync([
+        push.sendPushNotificationsAsync([
             {
                 to: to,
                 sound: sound,

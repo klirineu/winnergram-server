@@ -1,10 +1,10 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true});var _followservice = require('../../services/Social/follow.service');
+import { FollowService } from "../../services/Social/follow.service";
 
 class FollowController {
-    static __initStatic() {this.Follow = async (req, res) => {
+    static Follow = async (req, res) => {
         const { memberid } = req.params;
         try {
-            const checkFollowing = await _followservice.FollowService.checkFollow(
+            const checkFollowing = await FollowService.checkFollow(
                 memberid,
                 req.user
             );
@@ -13,7 +13,7 @@ class FollowController {
                     .status(400)
                     .json({ status: "error", msg: "Aleardy Follow this user" });
 
-            const FollowUser = await _followservice.FollowService.Follow(memberid, req.user);
+            const FollowUser = await FollowService.Follow(memberid, req.user);
 
             return res.status(200).json(FollowUser);
         } catch (error) {
@@ -22,12 +22,12 @@ class FollowController {
                 .status(500)
                 .json({ status: "error", msg: "Internal Server Error" });
         }
-    }}
+    };
 
-    static __initStatic2() {this.unFollow = async (req, res) => {
+    static unFollow = async (req, res) => {
         const { memberid } = req.params;
         try {
-            const checkFollowing = await _followservice.FollowService.checkFollow(
+            const checkFollowing = await FollowService.checkFollow(
                 memberid,
                 req.user
             );
@@ -37,7 +37,7 @@ class FollowController {
                     msg: "Not Following this user",
                 });
 
-            const unFollowUser = await _followservice.FollowService.unFollow(
+            const unFollowUser = await FollowService.unFollow(
                 memberid,
                 req.user
             );
@@ -48,12 +48,12 @@ class FollowController {
                 .status(500)
                 .json({ status: "error", msg: "Internal Server Error" });
         }
-    }}
+    };
 
-    static __initStatic3() {this.isFollowing = async (req, res) => {
+    static isFollowing = async (req, res) => {
         const { memberid } = req.params;
         try {
-            const isFollowingUser = await _followservice.FollowService.checkFollow(
+            const isFollowingUser = await FollowService.checkFollow(
                 memberid,
                 req.user
             );
@@ -66,12 +66,12 @@ class FollowController {
                 .status(500)
                 .json({ status: "error", msg: "Internal Server Error" });
         }
-    }}
+    };
 
-    static __initStatic4() {this.getUserFollowing = async (req, res) => {
+    static getUserFollowing = async (req, res) => {
         const { username } = req.params;
         try {
-            const Followers = await _followservice.FollowService.getFollowingUsersData({
+            const Followers = await FollowService.getFollowingUsersData({
                 username,
             });
 
@@ -87,7 +87,7 @@ class FollowController {
                 .status(500)
                 .json({ status: "error", msg: "Internal Server Error" });
         }
-    }}
-} FollowController.__initStatic(); FollowController.__initStatic2(); FollowController.__initStatic3(); FollowController.__initStatic4();
+    };
+}
 
-exports.FollowController = FollowController;
+export { FollowController };

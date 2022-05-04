@@ -1,6 +1,6 @@
-"use strict";var _socketio = require('socket.io');
-var _directservice = require('./services/Social/direct.service');
-const io = new (0, _socketio.Server)({ cors: "*" });
+import { Server } from "socket.io";
+import { DirectService } from "./services/Social/direct.service";
+const io = new Server({ cors: "*" });
 
 io.on("connection", (socket) => {
     socket.on("wg_join", (room) => {
@@ -8,7 +8,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("wg_newmessage", async (data) => {
-        const newMessage = await _directservice.DirectService.createNewmessage({
+        const newMessage = await DirectService.createNewmessage({
             id: data.id,
             author: data.author,
             message: data.message,
