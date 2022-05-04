@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider          = "mysql"
+    url               = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Accounts {
+    id          String      @unique @default(cuid())
+    username    String      @unique
+    email       String      @unique
+    password    String
+    secretToken String      @unique
+    role        Role        @default(USER)
+    accountType AccountType @default(BASIC)
+    verified    Boolean     @default(false)
+    pushToken   String?
+    Personal    Personal[]
+    Follows     Follows[]
+    Posts       Posts[]
+    Comments    Comments[]
+    Settings    Settings[]
+    createdat   DateTime    @default(now())
+}
+
+model Personal {
+    fname   String
+    lname   String
+    age     Int
+    avatar  String
+    user    String   @unique
+    Account Accounts @relation(fields: [user], references: [id])
+}
+
+model Settings {
+    id       Int      @id @default(autoincrement())
+    follows  Boolean  @default(true)
+    likes    Boolean  @default(true)
+    comments Boolean  @default(true)
+    messages Boolean  @default(true)
+    user     String   @unique
+    Account  Accounts @relation(fields: [user], references: [id])
+}
+
+model Follows {
+    id          Int      @id @default(autoincrement())
+    author      String
+    member      String
+    room        String
+    followed_at DateTime @default(now())
+    Account     Accounts @relation(fields: [author], references: [id])
+}
+
+model Direct {
+    id         Int        @id @default(autoincrement())
+    author     String
+    member     String
+    room       String     @unique
+    Messages   Messages[]
+    created_at DateTime   @default(now())
+}
+
+model Messages {
+    id         Int      @id @default(autoincrement())
+    room       String
+    author     String
+    message    String
+    created_at DateTime @default(now())
+    Direct     Direct   @relation(fields: [room], references: [room])
+}
+
+model Posts {
+    id        String     @id @default(uuid())
+    content   String
+    file      String
+    hashtags  String
+    isImage   Boolean    @default(false)
+    isVideo   Boolean    @default(false)
+    posted_at DateTime   @default(now())
+    Comments  Comments[]
+    Likes     Likes[]
+    author    String
+    Account   Accounts   @relation(fields: [author], references: [id])
+}
+
+model Comments {
+    id           Int      @id @default(autoincrement())
+    post         String
+    author       String
+    content      String
+    commented_at DateTime @default(now())
+    Post         Posts    @relation(fields: [post], references: [id])
+    Account      Accounts @relation(fields: [author], references: [id])
+}
+
+model Likes {
+    id       Int      @id @default(autoincrement())
+    post     String
+    member   String
+    liked_at DateTime @default(now())
+    Post     Posts    @relation(fields: [post], references: [id])
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+enum AccountType {
+    BASIC
+    GOOGLE
+    FACEBOOK
+}

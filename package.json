@@ -1,0 +1,48 @@
+{
+  "name": "win.backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "sucrase ./src -d ./dist --transforms imports",
+    "dev": "nodemon src/server.js",
+    "wg_websocket": "nodemon ./src/websocket.js",
+    "wg_bull": "nodemon src/bull.js",
+    "wg_httpserver": "nodemon src/server.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.8.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15",
+    "prisma": "^3.12.0",
+    "sucrase": "^3.20.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^3.12.0",
+    "aws-sdk": "^2.1067.0",
+    "axios": "^0.26.0",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.1",
+    "bull": "^4.5.1",
+    "cluster-rolling-restart": "^1.0.12",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.0",
+    "expo-server-sdk": "^3.6.0",
+    "express": "^4.17.2",
+    "express-cluster-stability": "^3.0.1",
+    "google-auth-library": "^7.14.1",
+    "http": "^0.0.1-security",
+    "http-errors": "^2.0.0",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "multer-s3": "^2.10.0",
+    "multer-s3-sharp-resizer": "^1.0.2",
+    "nodemailer": "^6.7.2",
+    "socket.io": "^4.4.1",
+    "string-random": "^0.1.3"
+  }
+}
